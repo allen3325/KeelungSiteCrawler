@@ -1,19 +1,30 @@
 package com.example.demo.service;
 
+import com.example.demo.KeelungSightsCrawler;
 import com.example.demo.NotFoundException;
 import com.example.demo.entity.Sight;
 import com.example.demo.repository.SightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class SightService {
     @Autowired
     private SightRepository repository;
 
+    private final KeelungSightsCrawler keelungSightsCrawler =  new KeelungSightsCrawler();
+
     public Object[] getSightByZone(String zone) {
-        return repository.findSightByZoneLike(zone)
-                .orElseThrow(() -> new NotFoundException("Can't find it."));
+        if(repository.findSightByZoneLike(zone).length != 0){
+            Sight[] sights = repository.findSightByZoneLike(zone);
+            return repository.findSightByZoneLike(zone);
+        }else{
+            Sight[] sights = keelungSightsCrawler.getItems(zone);
+            saveAllSight(sights);
+            return sights;
+        }
     }
 
     public Object[] getSightByName(String name){

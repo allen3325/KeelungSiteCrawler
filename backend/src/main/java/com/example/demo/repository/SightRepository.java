@@ -8,6 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface SightRepository extends MongoRepository<Sight,String> {
-    Optional<Object[]> findSightByZoneLike(String zone);
+    boolean existsSightBySightName(String sightName);
+    Sight[] findSightByZoneLike(String zone);
     Optional<Object[]> findSightBySightNameLike(String name);
 }
