@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo;
 
 import com.example.demo.entity.Sight;
 import org.jsoup.Jsoup;
@@ -7,9 +7,30 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
-public class SiteCrawlerService {
+public class KeelungSightsCrawler {
 
-    public SiteCrawlerService() {
+    public KeelungSightsCrawler() {
+    }
+
+    public String[] getAllZone(){
+        String URL = "https://www.travelking.com.tw/tourguide/taiwan/keelungcity/";
+        Document doc = null;
+        Document nextDoc = null;
+
+        // connection
+        try {
+            doc = Jsoup.connect(URL).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // find sights number
+        Elements zoneData = doc.select("#guide-point > div > h4");
+        String[] tmp = new String[zoneData.size()];
+        for(int i = 0;i< zoneData.size();i++){
+            tmp[i] = zoneData.get(i).text();
+        }
+        return tmp;
     }
 
     public Sight[] getItems(String zone) {
@@ -63,7 +84,6 @@ public class SiteCrawlerService {
                 sights[i].setPhotoURL(null);
             sights[i].setDescription(description.text());
             sights[i].setAddress(address.text());
-
         }
         return sights;
     }
